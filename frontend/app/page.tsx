@@ -1,13 +1,12 @@
 import React from 'react';
-import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 
 export default function Component() {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Chat history column */}
-      <aside className="w-1/5 border-r border-gray-300 overflow-y-auto bg-white">
-        <h2 className="text-xl font-semibold text-center p-4 bg-gray-200">Chat History</h2>
+      <aside className="w-1/5 border-r border-gray-300 overflow-y-auto bg-gray-900 text-white">
+        <h2 className="text-xl font-semibold text-center p-4 bg-gray-800">Chat History</h2>
         {/* ... existing chat history content */}
       </aside>
 
@@ -20,23 +19,20 @@ export default function Component() {
           {/* More chat bubbles */}
         </main>
 
-        {/* Footer with input and send button */}
+        {/* Footer with input, send button, and microphone icon */}
         <footer className="border-t border-gray-300 p-6 bg-white">
           <form className="flex items-center space-x-3 w-full">
-            {/* Icon button */}
-            <Button className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3">
-              {/* SVG icon */}
-            </Button>
-
-            {/* Message input field */}
-            <div className="flex-grow">
+            {/* Message input field with microphone icon */}
+            <div className="flex-grow flex items-center">
               <Input style={{ width: '100%', borderRadius: '25px', padding: '10px 15px', border: '1px solid #ddd' }} placeholder="Type your message..." />
+              {/* Microphone icon */}
+              <img src="/micon.svg.png" alt="Microphone" className="ml-2 h-8 w-8" style={{ cursor: 'pointer' }} />
             </div>
 
             {/* Send button */}
-            <Button type="submit" className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6 py-2">
+            <button type="submit" className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6 py-2">
               Send
-            </Button>
+            </button>
           </form>
         </footer>
       </div>
