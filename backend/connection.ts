@@ -2,10 +2,18 @@ import { Pool } from "pg";
 import { MongoClient } from "mongodb";
 
 const client = new MongoClient(
-  "mongodb+srv://boss:12345678a!@admissions.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000",
+  "mongodb+srv://princeaddo:ThisIsAPassword1@admission.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000",
   {
     connectTimeoutMS: 60000,
   }
+);
+
+// const client2 = new MongoClient("", {
+//   connectTimeoutMS: 60000,
+// });
+
+const login_client = new MongoClient(
+  "mongodb+srv://admin:admin@cluster0.vobs4r8.mongodb.net/?retryWrites=true&w=majority"
 );
 
 const vector = client.db("langchain").collection("vector-db");
