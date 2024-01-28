@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { useRouter } from "next/navigation";
 
 interface SignupInfo {
   first_name: string;
@@ -34,6 +35,8 @@ export default function Signup() {
     location: [],
     sports: [],
   });
+
+  const router = useRouter();
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -92,6 +95,15 @@ export default function Signup() {
             >
               Next
             </button>
+            <p className="text-white text-xs">
+              Click to here to{" "}
+              <a
+                className="text-blue-600 hover:text-blue-700 cursor-pointer"
+                href="/login"
+              >
+                log in
+              </a>
+            </p>
           </>
         ) : signupState === 1 ? (
           <>
@@ -403,9 +415,38 @@ export default function Signup() {
               </button>
               <button
                 className="self-start bg-[#9ece6a] hover:bg-[#628042] px-4 py-1 rounded-md"
-                onClick={() => console.log("done")}
+                onClick={async () => {
+                  console.log("here");
+                  const response = await fetch(
+                    "http://localhost:8080/api/auth/signup",
+                    {
+                      method: "POST",
+                      body: JSON.stringify(signupInfo),
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                    }
+                  );
+                  console.log(response);
+                  const token_pack = await response.json();
+
+                  localStorage.setItem("token", token_pack.token);
+
+                  setSignupInfo({
+                    first_name: "",
+                    last_name: "",
+                    email: "",
+                    password: "",
+                    major_interests: [],
+                    college_budget: 5000,
+                    location: [],
+                    sports: [],
+                  });
+
+                  router.push("/");
+                }}
               >
-                Done
+                Sign up
               </button>
             </div>
           </>

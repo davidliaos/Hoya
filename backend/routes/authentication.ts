@@ -4,9 +4,12 @@ import { validateRequest } from "zod-express-middleware";
 import { z } from "zod";
 import { pool } from "../connection";
 import jwt from "jsonwebtoken";
+import cors from "cors";
 
 const router = express.Router();
 const saltRounds = 10;
+
+router.use(cors());
 
 router.post(
   "/login",
@@ -18,6 +21,7 @@ router.post(
   }),
   async (req, res) => {
     const body = req.body;
+    console.log(body);
     const salt = await bcrypt.genSalt(saltRounds);
     const hashed_password = bcrypt.hash(body.password, salt);
 
@@ -27,9 +31,10 @@ router.post(
     );
 
     if (result.rows.length === 0) {
-      return res.send("NOT FOUND");
+      return res.status(400).send({ error: "NOT FOUND" });
     }
 
+    // console.log(result.rows[0].user_id);
     const token = jwt.sign(
       String(result.rows[0].user_id),
       process.env.JWT_SHH as string
@@ -57,7 +62,6 @@ router.post(
   }),
   async (req, res) => {
     const body = req.body;
-    console.log(body);
 
     const salt = await bcrypt.genSalt(saltRounds);
     const hashed_password = bcrypt.hash(body.password, salt);

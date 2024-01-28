@@ -1,54 +1,147 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Input from "@/components/ui/Input";
 
 export default function Component() {
   const [localConvo, setLocalConvo] = useState<string[]>([]);
   const [userInput, setUserInput] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      router.replace("/login");
+    } else {
+      (async () => {
+        const data = await fetch("http://localhost:8080/api/home/user-info", {
+          method: "GET",
+          headers: {
+            Authorization: localStorage.getItem("token")!,
+          },
+        });
+        const data_pres = await data.json();
+
+        setUsername(data_pres.first_name + " " + data_pres.last_name);
+      })();
+    }
+  }, []);
+
   return (
     <div className="flex h-screen bg-gray-100">
-      <aside className="w-1/5 overflow-y-auto bg-[#1a1b26] text-white"></aside>
+      <aside className="w-1/5 overflow-y-auto bg-[#1a1b26] text-white flex flex-col">
+        <h1 className="text-center my-6 text-2xl font-bold">Pathfinder.ai</h1>
+        <div>
+          <button
+            className="hover:bg-[#24283b] w-[100%] text-md py-4"
+            onClick={() => setCategory("Admission Requirements")}
+          >
+            Admission Requirements
+          </button>
+          <button
+            className="hover:bg-[#24283b] w-[100%] text-md py-4"
+            onClick={() => setCategory("Application Process")}
+          >
+            Application Process
+          </button>
+          <button
+            className="hover:bg-[#24283b] w-[100%] text-md py-4"
+            onClick={() => setCategory("Financial Aid and Scholarship")}
+          >
+            Financial Aid and Scholarships
+          </button>
+          <button
+            className="hover:bg-[#24283b] w-[100%] text-md py-4"
+            onClick={() => setCategory("Choosing a College")}
+          >
+            Choosing a College
+          </button>
+          <button
+            className="hover:bg-[#24283b] w-[100%] text-md py-4"
+            onClick={() => setCategory("Career Path")}
+          >
+            Career Path
+          </button>
+        </div>
+        <div className="flex flex-col-reverse p-3 flex-1">
+          <div className="flex items-center">
+            <img
+              src="/grad.jpg"
+              alt="gradient decent"
+              className="rounded-full w-[55px] h-[55px]"
+            />
+            <h2 className="ms-4">{username}</h2>
+          </div>
+        </div>
+      </aside>
 
       <div className="flex flex-col flex-grow">
-        <main className="overflow-y-auto p-6 space-y-4 flex-grow bg-[#414868] text-[#2ac3de]">
-          {localConvo.map((input, i) => (
-            <>{i % 2 === 0 ? <p>user: {input}</p> : <p>Ai: {input}</p>}</>
-          ))}
+        <main className="overflow-y-auto p-6 space-y-4 flex-grow bg-[#414868] text-white">
+          {localConvo.length === 0 ? (
+            <>
+              <div className="flex justify-center">
+                <h2 className="text-3xl font-bold mt-16">{category}</h2>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+          <div className="flex flex-col">
+            {localConvo.map((input, i) => (
+              <>
+                {i % 2 === 0 ? (
+                  <div className="flex justify-start ml-auto bg-blue-500 rounded-xl px-4 py-1 max-w-[500px] rounded-tr-none">
+                    <p>{input}</p>
+                  </div>
+                ) : (
+                  <div className="flex justify-end mr-auto bg-gray-500 rounded-xl px-4 py-1 max-w-[300px] rounded-tl-none">
+                    <p>{input}</p>
+                  </div>
+                )}
+              </>
+            ))}
+          </div>
         </main>
 
-        <footer className="p-6 bg-[#24283b]">
-          <div className="flex items-center gap-3">
-            <img
-              src="/micon.svg.png"
-              alt="Microphone"
-              className="ml-2 h-8 w-8"
-              style={{ cursor: "pointer" }}
-            />
-            <div className="flex-grow flex items-center">
-              <input
-                className="rounded-lg bg-[#9aa5ce] text-[#24283b] py-4 px-2 w-[100%] h-[50px] placeholder:text-[#24283b]"
-                placeholder="Message Adviser"
-                onChange={(e) => setUserInput(e.target.value)}
-                value={userInput}
+        {category === "" ? (
+          <></>
+        ) : (
+          <footer className="p-6 bg-[#24283b]">
+            <div className="flex items-center gap-3">
+              <img
+                src="/micon.svg.png"
+                alt="Microphone"
+                className="ml-2 h-8 w-8"
+                style={{ cursor: "pointer" }}
               />
-            </div>
+              <div className="flex-grow flex items-center">
+                <input
+                  className="rounded-lg bg-[#9aa5ce] text-[#24283b] py-4 px-2 w-[100%] h-[50px] placeholder:text-[#24283b]"
+                  placeholder="Message Adviser"
+                  onChange={(e) => setUserInput(e.target.value)}
+                  value={userInput}
+                />
+              </div>
 
-            <button
-              type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white rounded-lg px-6 py-2"
-              onClick={() => {
-                setLocalConvo([
-                  ...localConvo,
-                  userInput,
-                  "This is generated by AI",
-                ]);
-                setUserInput("");
-              }}
-            >
-              Send
-            </button>
-          </div>
-        </footer>
+              <button
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 text-white rounded-lg px-6 py-2"
+                onClick={() => {
+                  setLocalConvo([
+                    ...localConvo,
+                    userInput,
+                    "This is generated by AI",
+                  ]);
+                  setUserInput("");
+                }}
+              >
+                Send
+              </button>
+            </div>
+          </footer>
+        )}
       </div>
     </div>
   );
