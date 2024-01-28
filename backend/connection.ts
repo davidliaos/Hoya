@@ -1,4 +1,14 @@
 import { Pool } from "pg";
+import { MongoClient } from "mongodb";
+
+const client = new MongoClient(
+  "mongodb://admissionrequirement:8qDq8yIgsDLsbxoVxglrCq5bV5r65RJCRgVQhAWweBxDt5ealgAls6VyTYSJkQR6fTgWpjwbB3PHACDbPK7efw==@admissionrequirement.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@admissionrequirement@",
+  {
+    connectTimeoutMS: 60000,
+  }
+);
+
+const vector = client.db("langchain").collection("vector-db");
 
 const pool = new Pool({
   user: process.env.PGUSER,
@@ -20,4 +30,4 @@ pool.query(`CREATE TABLE IF NOT EXISTS users (
   sport VARCHAR(50)[] NOT NULL
 );`);
 
-export { pool };
+export { pool, client, vector };
