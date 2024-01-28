@@ -26,6 +26,7 @@ router.ws("/admission-requirements", async (req, res) => {
     //   }
     // );
 
+    // console.log("here");
     // const resultOne = await vectorStore.similaritySearch(msg.toString(), 1);
     // console.log("here");
     // console.log(resultOne);
@@ -46,7 +47,7 @@ router.ws("/admission-requirements", async (req, res) => {
 
     const message = await chain.invoke({
       input: msg.toString(),
-      // doc: resultOne[0].pageContent
+      // doc: resultOne[0].pageContent,
     });
 
     ws.send(message);

@@ -21,28 +21,52 @@ router.post(
   }),
   async (req, res) => {
     const body = req.body;
-    console.log(body);
     const salt = await bcrypt.genSalt(saltRounds);
     const hashed_password = bcrypt.hash(body.password, salt);
 
-    const result = await pool.query(
-      "SELECT user_id FROM users WHERE email = $1 AND password = $2",
-      [body.email, hashed_password]
-    );
+    try {
+      const result = await pool.query(
+        "SELECT user_id FROM users WHERE email = $1 AND password = $2",
+        [body.email, hashed_password]
+      );
 
-    if (result.rows.length === 0) {
-      return res.status(400).send({ error: "NOT FOUND" });
+      if (result.rows.length === 0) {
+        return res.status(400).send({ error: "NOT FOUND" });
+      }
+
+      // console.log(result.rows[0].user_id);
+      const token = jwt.sign(
+        String(result.rows[0].user_id),
+        process.env.JWT_SHH as string
+      );
+
+      return res.send({
+        token: token,
+      });
+    } catch (e) {
+      try {
+        const result = await pool.query(
+          "SELECT user_id FROM users WHERE email = $1 AND password = $2",
+          [body.email, hashed_password]
+        );
+
+        if (result.rows.length === 0) {
+          return res.status(400).send({ error: "NOT FOUND" });
+        }
+
+        // console.log(result.rows[0].user_id);
+        const token = jwt.sign(
+          String(result.rows[0].user_id),
+          process.env.JWT_SHH as string
+        );
+
+        return res.send({
+          token: token,
+        });
+      } catch (e) {
+        return res.status(400).send({ error: "Server error" });
+      }
     }
-
-    // console.log(result.rows[0].user_id);
-    const token = jwt.sign(
-      String(result.rows[0].user_id),
-      process.env.JWT_SHH as string
-    );
-
-    return res.send({
-      token: token,
-    });
   }
 );
 

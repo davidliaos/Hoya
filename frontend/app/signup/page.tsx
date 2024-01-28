@@ -35,6 +35,7 @@ export default function Signup() {
     location: [],
     sports: [],
   });
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -416,7 +417,7 @@ export default function Signup() {
               <button
                 className="self-start bg-[#9ece6a] hover:bg-[#628042] px-4 py-1 rounded-md"
                 onClick={async () => {
-                  console.log("here");
+                  setLoading(true);
                   const response = await fetch(
                     "http://localhost:8080/api/auth/signup",
                     {
@@ -427,8 +428,8 @@ export default function Signup() {
                       },
                     }
                   );
-                  console.log(response);
                   const token_pack = await response.json();
+                  setLoading(false);
 
                   localStorage.setItem("token", token_pack.token);
 
@@ -448,6 +449,15 @@ export default function Signup() {
               >
                 Sign up
               </button>
+              {loading ? (
+                <img
+                  src="loading.gif"
+                  alt="loading"
+                  className="w-[25px] h-[25px]"
+                />
+              ) : (
+                <></>
+              )}
             </div>
           </>
         ) : (

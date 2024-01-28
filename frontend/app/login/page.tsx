@@ -13,6 +13,7 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -44,6 +45,7 @@ export default function LoginPage() {
           className="self-start bg-[#9ece6a] hover:bg-[#628042] px-4 py-1 rounded-md"
           onClick={async () => {
             console.log(JSON.stringify(loginInfo));
+            setLoading(true);
             const response = await fetch(
               "http://localhost:8080/api/auth/login",
               {
@@ -55,7 +57,7 @@ export default function LoginPage() {
               }
             );
             const token_pack = await response.json();
-            console.log(token_pack);
+            setLoading(false);
 
             localStorage.setItem("token", token_pack.token);
 
@@ -64,11 +66,21 @@ export default function LoginPage() {
               password: "",
             });
 
+            if (response.status >= 400) {
+              setLoading(false);
+              return;
+            }
+
             router.push("/");
           }}
         >
           Login
         </button>
+        {loading ? (
+          <img src="loading.gif" alt="loading" className="w-[25px] h-[25px]" />
+        ) : (
+          <></>
+        )}
         <p className="text-white text-xs">
           Click to here to{" "}
           <a

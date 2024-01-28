@@ -2,7 +2,7 @@ import { Pool } from "pg";
 import { MongoClient } from "mongodb";
 
 const client = new MongoClient(
-  "mongodb://admissionrequirement:8qDq8yIgsDLsbxoVxglrCq5bV5r65RJCRgVQhAWweBxDt5ealgAls6VyTYSJkQR6fTgWpjwbB3PHACDbPK7efw==@admissionrequirement.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@admissionrequirement@",
+  "mongodb+srv://boss:12345678a!@admissions.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000",
   {
     connectTimeoutMS: 60000,
   }
@@ -16,6 +16,10 @@ const pool = new Pool({
   host: process.env.PGHOST,
   database: "postgres",
   port: Number(process.env.PGPORT),
+  query_timeout: 2,
+  statement_timeout: 2,
+  idleTimeoutMillis: 5000,
+  connectionTimeoutMillis: 5000,
 });
 
 pool.query(`CREATE TABLE IF NOT EXISTS users (
