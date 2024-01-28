@@ -41,8 +41,10 @@ export default function Signup() {
   });
   return (
     <div className="flex flex-col items-center justify-center h-[100vh] bg-gradient-to-br from-[#565f89] to-[#414868]">
-      <div className="flex flex-col bg-[#1a1b26] p-4 rounded-lg gap-4 max-w-[570px]">
-        <h1 className="text-white text-xl font-bold">Sign Up</h1>
+      <div className="flex flex-col bg-[#1a1b26] p-4 rounded-lg gap-4 w-[530px]">
+        <h1 className="text-white text-xl font-bold border-b-2 border-b-white pb-2">
+          Sign Up
+        </h1>
         {signupState === 0 ? (
           <>
             {" "}
